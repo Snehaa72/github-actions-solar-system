@@ -26,10 +26,10 @@ jobs:
             node-version: 20
     
         - name: Install Dependencies
-          run: npm install
+          run: npm install kkkk
     
         - name: Unit Testing
-          run: npm kkk test
+          run: npm test
           
         - name: Archive Test Result
           if: always()
