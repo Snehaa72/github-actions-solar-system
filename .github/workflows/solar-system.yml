@@ -88,7 +88,7 @@ jobs:
           uses: docker/login-action@v3
           with:
             registry: ghcr.io
-            username: '${{ OWNER_LC }}'
+            username: '${{ OWNER }}'
             password: '${{ secrets.GITHUB_TOKEN }}'
 
         - name: docker build
@@ -96,4 +96,4 @@ jobs:
           with:
             context: .
             push: true 
-            tags: 'ghcr.io/${{ OWNER_LC }}/solar-system:${{ github.sha }}' 
+            tags: 'ghcr.io/${{ OWNER }}/solar-system:${{ github.sha }}' 
