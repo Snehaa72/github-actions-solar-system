@@ -73,8 +73,16 @@ jobs:
     docker:
         name: docker
         runs-on: ubuntu-latest
-        needs: unit-testing, code-coverage
+        needs: 
+        - unit-testing
+        - code-coverage
         steps:
+        - name: set lower case owner name
+          run: |
+            echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+          env:
+            OWNER: '${{ github.repository_owner }}'
+
         - name: Checkout Repository
           uses: actions/checkout@v4
 
@@ -83,20 +91,12 @@ jobs:
           uses: docker/login-action@v3
           with:
             registry: ghcr.io
-            username: '${{ github.repository_owner }}'
+            username: '${{ OWNER_LC }}'
             password: '${{ secrets.GITHUB_TOKEN }}'
-
-        - name: Format repo slug
-          uses: actions/github-script@v4
-          id: repo_slug
-          with:
-            result-encoding: string
-            script: return `ghcr.io/${github.repository.toLowerCase()}`
 
         - name: docker build
           uses: docker/build-push-action@v6
-          ${{ steps.repo_slug.outputs.result }}:latest
           with:
             context: .
             push: true 
-            tags: 'ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha }}' 
+            tags: 'ghcr.io/${{ OWNER_LC }}/solar-system:${{ github.sha }}' 
