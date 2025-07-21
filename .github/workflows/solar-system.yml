@@ -76,19 +76,17 @@ jobs:
         - code-coverage
         - unit-testing
         steps:
-        - name: set lower case owner name
-          run: |
-            echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-          env:
-            OWNER: '${{ github.repository_owner }}'
+        
         - uses: actions/checkout@v4
         - uses: docker/login-action@v3
           with:
             registry: ghcr.io
             username: '${{ github.repository_owner }}'
             password: '${{ secrets.GITHUB_TOKEN }}'
+        - name: Lowercase the repo name
+          run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
         - uses: docker/build-push-action@v6
           with:
             context: .
             push: true
-            tags: 'ghcr.io/${{ lowercase(github.repository_owner) }}/solar-system:${{ github.sha }}'
+            tags: 'ghcr.io/${{ env.REPO }}/solar-system:${{ github.sha }}'
