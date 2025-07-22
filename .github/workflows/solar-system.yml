@@ -108,7 +108,7 @@ jobs:
             method: kubeconfig
             kubeconfig: '${{ secrets.KUBECONFIG }}'            
         - run: kubectl version -o yaml
-        - run: >
+        - run:
             echo "INGRESS_IP=$(kubectl -n ingress-nginx get services ingress-nginx-controller -o jsonpath='{.status.loadbalancer.ingress[0].ip}')" >> $GITHUB_ENV
         - uses: cschleiden/replace-tokens@v1
           with:
