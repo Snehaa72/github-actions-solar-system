@@ -106,19 +106,19 @@ jobs:
             SOURCE_DIR: 'reports-${{ github.sha }}'
             DEST_DIR: 'reports-${{ github.sha }}'    
   
-    slack-notification:
-      name: slack-notify
-      runs-on: ubuntu-latest
-      if: always()  
-      needs: [code-coverage, unit-testing]
-      continue-on-error: true
-      steps:
-        - uses: actions/checkout@v4
-        - name: Slack Notification
-          uses: rtCamp/action-slack-notify@v2
-          env:
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-            SLACK_CHANNEL: githubaction2
+  #  slack-notification:
+  #     name: slack-notify
+   #    runs-on: ubuntu-latest
+  #     if: always()  
+  #     needs: [code-coverage, unit-testing]
+  #     continue-on-error: true
+  #     steps:
+  #       - uses: actions/checkout@v4
+  #       - name: Slack Notification
+  #         uses: rtCamp/action-slack-notify@v2
+  #         env:
+  #           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  #           SLACK_CHANNEL: githubaction2
 
     publishing_SNS:
        name: SNS-topic
@@ -127,7 +127,7 @@ jobs:
         - name: Publish SNS Topic
           uses: nothingalike/sns-publish-topic@v1.6
           with:
-            MESSAGE: 'message'
+            MESSAGE: 'this is my first try sns message'
             TOPIC_ARN: 'arn:aws:sns:[ap-south-1]:[198760341832]:[myfirstsnstopic]'
           env:
             AWS_REGION: ap-south-1
