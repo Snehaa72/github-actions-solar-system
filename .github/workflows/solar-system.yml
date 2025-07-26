@@ -106,7 +106,7 @@ jobs:
             SOURCE_DIR: 'reports-${{ github.sha }}'
             DEST_DIR: 'reports-${{ github.sha }}'    
   
-    slack notification:
+    slack-notification:
       name: slack-notify
       runs-on: ubuntu-latest
       if: always()  
