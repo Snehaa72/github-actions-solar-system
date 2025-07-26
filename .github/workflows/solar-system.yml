@@ -124,9 +124,10 @@ jobs:
        name: SNS-topic
        runs-on: ubuntu-latest
        steps:
-        - name: Publish SNS Topic
-          uses: nothingalike/sns-publish-topic@v1.6
+        - name: Publish SNS notifications
+          uses: akki192/aws-sns-publish-notifications@1.0.0
           with:
+            SUBJECT: "Hello"
             MESSAGE: 'this is my first try sns message'
             TOPIC_ARN: 'arn:aws:sns:[ap-south-1]:[198760341832]:[myfirstsnstopic.fifo]'
           env:
