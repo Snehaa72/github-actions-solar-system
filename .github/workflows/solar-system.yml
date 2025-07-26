@@ -128,7 +128,7 @@ jobs:
           uses: nothingalike/sns-publish-topic@v1.6
           with:
             MESSAGE: 'this is my first try sns message'
-            TOPIC_ARN: 'arn:aws:sns:ap-south-1:198760341832:myfirstsnstopic.fifo'
+            TOPIC_ARN: 'arn:aws:sns:[ap-south-1]:[198760341832:myfirstsnstopic.fifo]'
           env:
             AWS_REGION: ap-south-1
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
