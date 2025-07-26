@@ -122,4 +122,5 @@ jobs:
               'ghcr.io/${{ env.REPO }}/solar-system:${{ github.sha }}'
             INGRESS_IP: '${{env.INGRESS_IP}}'
         - run: cat kubernetes/development/*.yaml
+
          
