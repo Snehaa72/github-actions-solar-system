@@ -110,7 +110,7 @@ jobs:
             method: kubeconfig
             kubeconfig: ${{ secrets.KUBECONFIG }}
         - run: |
-            kubectl version --short
+            kubectl version -o yaml
             echo ----------------------------------
             kubectl get nodes
          
