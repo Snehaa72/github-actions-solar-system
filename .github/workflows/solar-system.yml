@@ -119,8 +119,21 @@ jobs:
           env:
             SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
             SLACK_CHANNEL: githubaction2
-            
-            
+
+    publishing_SNS:
+       name: SNS-topic
+       runs-on: ubuntu-latest
+       steps:
+        - name: Publish SNS Topic
+          uses: nothingalike/sns-publish-topic@v1.6
+          with:
+            MESSAGE: "message"
+            TOPIC_ARN: "arn:aws:sns:[ap-south-1]:[198760341832]:[myfirstsnstopic]"
+          env:
+            AWS_REGION: ap-south-1
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  -
+                      
 
 
         
