@@ -114,10 +114,10 @@ jobs:
         - run: kubectl version -o yaml
 
     integration-testing:
-        name: integration-test
-        uses: .github/workflows/reusable-workflow.yml
-        with:
-          ingress url: ${{ needs.dev-deploy.outputs.APP_INGRESS_URL }} 
+        - name: integration-test
+          uses: .github/workflows/reusable-workflow.yml
+          with:
+            ingress url: ${{ needs.dev-deploy.outputs.APP_INGRESS_URL }} 
     
     reports-s3:
         needs: [code-coverage, unit-testing]
