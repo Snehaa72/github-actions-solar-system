@@ -120,11 +120,11 @@ jobs:
           ingress url: ${{ needs.dev-deploy.outputs.APP_INGRESS_URL }} 
     
     reports-s3:
-      needs: [code-coverage, unit-testing]
-      name: AWS S3-upload reports
-      runs-on: ubuntu-latest
-      continue-on-error: true
-      steps:
+        needs: [code-coverage, unit-testing]
+        name: AWS S3-upload reports
+        runs-on: ubuntu-latest
+        continue-on-error: true
+        steps:
         - name: Download Mocha Test artifact
           uses: actions/Download-artifact@v4
           with:
