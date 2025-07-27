@@ -69,6 +69,55 @@ jobs:
             name: Code-Coverage-Result
             path: coverage
             retention-days: 5
+
+    docker:
+        runs-on: ubuntu-latest
+        needs:
+        - code-coverage
+        - unit-testing
+        steps:
+        
+        - uses: actions/checkout@v4
+        - uses: docker/login-action@v3
+          with:
+            registry: ghcr.io
+            username: '${{ github.repository_owner }}'
+            password: '${{ secrets.GITHUB_TOKEN }}'
+        - name: Lowercase the repo name
+          run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+
+        - name: docker push
+          uses: docker/build-push-action@v6
+          with:
+            context: .
+            push: true
+            tags: 'ghcr.io/${{ env.REPO }}/solar-system:${{ github.sha }}'
+
+    dev-deploy:
+        needs: docker
+        runs-on: ubuntu-latest
+        environment:
+        name: development
+        outputs:
+        APP_INGRESS_URL: ${{ steps.set-ingress-host-address.outputs.APP_INGRESS_HOST }}
+        steps:
+        - uses: actions/checkout@v4
+        - uses: azure/setup-kubectl@v4
+          with:
+            version: 'v1.28.1'
+        - run: sudo apt install linux-modules-extra-raspi && reboot
+        - run: kubectl config current-context
+        - uses: azure/k8s-set-context@v3
+          with:
+            method: kubeconfig
+            kubeconfig: ${{ secrets.KUBECONFIG }}
+        - run: kubectl version -o yaml
+
+    integration-testing:
+        name: integration-test
+        uses: .github/workflows/reusable-workflow.yml
+        with:
+          ingress url: ${{ needs.dev-deploy.outputs.APP_INGRESS_URL }} 
     
     reports-s3:
       needs: [code-coverage, unit-testing]
@@ -106,19 +155,19 @@ jobs:
             SOURCE_DIR: 'reports-${{ github.sha }}'
             DEST_DIR: 'reports-${{ github.sha }}'    
   
-  #  slack-notification:
-  #     name: slack-notify
-   #    runs-on: ubuntu-latest
-  #     if: always()  
-  #     needs: [code-coverage, unit-testing]
-  #     continue-on-error: true
-  #     steps:
-  #       - uses: actions/checkout@v4
-  #       - name: Slack Notification
-  #         uses: rtCamp/action-slack-notify@v2
-  #         env:
-  #           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-  #           SLACK_CHANNEL: githubaction2
+    slack-notification:
+       name: slack-notify
+       runs-on: ubuntu-latest
+       if: always()  
+       needs: [code-coverage, unit-testing]
+       continue-on-error: true
+       steps:
+         - uses: actions/checkout@v4
+         - name: Slack Notification
+           uses: rtCamp/action-slack-notify@v2
+           env:
+             SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+             SLACK_CHANNEL: githubaction2
 
     publishing_SNS:
        name: SNS-topic
@@ -127,7 +176,7 @@ jobs:
         - name: Publish SNS notifications
           uses: akki192/aws-sns-publish-notifications@1.0.0
           with:
-            SUBJECT: "Hello"
+            SUBJECT: 'Hello'
             MESSAGE: 'this is my first try sns message'
             TOPIC_ARN: 'arn:aws:sns:[ap-south-1]:[198760341832]:[myfirstsnstopic.fifo]'
           env:
